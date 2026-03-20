@@ -38,8 +38,6 @@ def get_dataset_path():
 # load environment variables from .env file
 load_dotenv()
 
-# Initialize OpenAI client
-client = openai.OpenAI()
 
 st.title("Hello, GenAI")
 st.write("Visualize your data with GenAI.")
@@ -79,26 +77,4 @@ if 'df' in st.session_state:
     grouped = st.session_state['df'].groupby('PRODUCT')['SENTIMENT_SCORE'].mean().reset_index()
     st.bar_chart(grouped, x='PRODUCT', y='SENTIMENT_SCORE')
 
-    
-    
-   
-    
-# # Add a text input box for the user input
-# user_prompt = st.text_input("Enter your prompt:", "Explain generative AI in one sentence")
-
-# # Add a slider for temperature
-# temperature = st.slider(
-#     "Model temperature:",
-#     min_value=0.0,
-#     max_value=1.0,
-#     value=0.7,
-#     step=0.01,
-#     help="Controls randomness: 0 = deterministic, 1 = very creative"
-# )
-
-# with st.spinner("AI is working...."):
-#     response = get_response(user_prompt, temperature)
-
-#     # Print the response from OpenAI
-#     st.write(response.output[0].content[0].text)
 

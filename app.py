@@ -11,7 +11,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+def _openai_api_key() -> str:
+    """Local: OPENAI_API_KEY in .env / env. Cloud: set in Streamlit App secrets."""
+    k = (os.getenv("OPENAI_API_KEY") or "").strip()
+    if k:
+        return k
+    try:
+        k = str(st.secrets["OPENAI_API_KEY"] or "").strip()
+    except Exception:
+        k = ""
+    if k:
+        return k
+    raise RuntimeError(
+        "Missing OPENAI_API_KEY. "
+        "Locally: add OPENAI_API_KEY to a .env file (or your environment). "
+        "On Streamlit Cloud: Settings → Secrets → add OPENAI_API_KEY = \"sk-...\""
+    )
+
+
+client = openai.OpenAI(api_key=_openai_api_key())
 
 # How many rows to send per API call (keeps requests under token limits).
 BATCH_SIZE = 10

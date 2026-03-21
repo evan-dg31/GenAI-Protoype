@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = openai.OpenAI()
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # How many rows to send per API call (keeps requests under token limits).
 BATCH_SIZE = 10

@@ -195,12 +195,28 @@ if run_now and text_column:
         st.success("Sentiment analysis complete.")
 
 if st.session_state.get("sentiment_ready"):
-    st.subheader(" 📊 Sentiment Score by Product")
-    grouped = (
-        st.session_state["df"]
-        .groupby("PRODUCT")["SENTIMENT_SCORE"]
-        .mean()
-        .reset_index()
-        .sort_values(by="SENTIMENT_SCORE", ascending=False)
-    )
-    st.bar_chart(grouped, x="PRODUCT", y="SENTIMENT_SCORE")
+    st.subheader(" 📊 Sentiment chart")
+    df_chart = st.session_state["df"]
+
+    if product_filter == "All Products":
+        grouped = (
+            df_chart.groupby("PRODUCT")["SENTIMENT_SCORE"]
+            .mean()
+            .reset_index()
+            .sort_values(by="SENTIMENT_SCORE", ascending=False)
+        )
+        st.bar_chart(grouped, x="PRODUCT", y="SENTIMENT_SCORE")
+        st.caption("Average sentiment score **per product** (all rows).")
+    else:
+        sub = df_chart[df_chart["PRODUCT"] == product_filter].reset_index(drop=True)
+        plot_df = pd.DataFrame(
+            {
+                "Review": [f"#{i + 1}" for i in range(len(sub))],
+                "SENTIMENT_SCORE": sub["SENTIMENT_SCORE"].astype(float),
+            }
+        )
+        st.bar_chart(plot_df, x="Review", y="SENTIMENT_SCORE")
+        st.caption(
+            f"Sentiment score **per review** for **{product_filter}** "
+            f"({len(sub)} row{'s' if len(sub) != 1 else ''})."
+        )
